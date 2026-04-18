@@ -7,28 +7,6 @@ Smart resource allocation system for NGO volunteer management.
 - UUID for unique IDs
 - Nodemon for development
 
-### Step 1 - Clone the repo
-
-### Step 2 - Install dependencies
-npm install
-
-### Step 3 - Set up Firebase
-1. Go to https://firebase.google.com and create a project
-2. Go to Project Settings -> Service Accounts -> Generate new private key
-3. Download the JSON file
-4. Rename it to `serviceAccount.json`
-5. Place it in the ROOT of this project (same level as package.json)
-
-### Step 4 - Create your .env file
-Copy .env.example and rename it to .env:
-- Fill in your PORT (default 5000)
-- NODE_ENV=development
-- FIREBASE_SERVICE_ACCOUNT_PATH=./serviceAccount.json
-
-### Step 5 - Run the server
-npm run dev
-
----
 
 ## API Routes
 
