@@ -1,7 +1,7 @@
 const { admin } = require('../config/firebase');
 
 const verifyToken = async (req, res, next) => {
-  // DEVELOPMENT BYPASS — remove before final deployment
+  // DEVELOPMENT BYPASS - remove before final deployment
   if (process.env.NODE_ENV === 'development') {
     req.user = { uid: 'test-user-001', role: 'admin' };
     return next();

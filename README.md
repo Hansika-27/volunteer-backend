@@ -9,27 +9,25 @@ Smart resource allocation system for NGO volunteer management.
 
 ## Setup Instructions for Teammates
 
-### Step 1 — Clone the repo
-git clone https://github.com/YOUR-USERNAME/volunteer-backend.git
-cd volunteer-backend
+### Step 1 - Clone the repo
 
-### Step 2 — Install dependencies
+### Step 2 - Install dependencies
 npm install
 
-### Step 3 — Set up Firebase
+### Step 3 - Set up Firebase
 1. Go to https://firebase.google.com and create a project
-2. Go to Project Settings → Service Accounts → Generate new private key
+2. Go to Project Settings -> Service Accounts -> Generate new private key
 3. Download the JSON file
 4. Rename it to `serviceAccount.json`
 5. Place it in the ROOT of this project (same level as package.json)
 
-### Step 4 — Create your .env file
+### Step 4 - Create your .env file
 Copy .env.example and rename it to .env:
 - Fill in your PORT (default 5000)
 - NODE_ENV=development
 - FIREBASE_SERVICE_ACCOUNT_PATH=./serviceAccount.json
 
-### Step 5 — Run the server
+### Step 5 - Run the server
 npm run dev
 
 Server starts at: http://localhost:5000
@@ -96,16 +94,16 @@ Score = Skill Match (40%) + Location Proximity (25%) + Availability (20%) + Past
 - Volunteers with more completed tasks score higher
 
 ## Task Lifecycle
-OPEN → ASSIGNED → IN_PROGRESS → COMPLETED → VERIFIED
+OPEN -> ASSIGNED -> IN_PROGRESS -> COMPLETED -> VERIFIED
 
 ## Firestore Collections
 Your code auto-creates these collections:
-- `volunteers` — volunteer profiles
-- `tasks` — disaster tasks
-- `assignments` — who is assigned to what
-- `zones` — disaster zones
-- `resources` — food, medicine, etc.
-- `impact_logs` — impact tracking data
+- `volunteers` - volunteer profiles
+- `tasks` - disaster tasks
+- `assignments` - who is assigned to what
+- `zones` - disaster zones
+- `resources` - food, medicine, etc.
+- `impact_logs` - impact tracking data
 
 ## Important Notes
 - Never commit `serviceAccount.json` or `.env` to GitHub

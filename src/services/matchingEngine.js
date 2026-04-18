@@ -25,18 +25,31 @@ function distanceScore(km) {
 
 // Turn experience into a score from 0 to 1
 function performanceScore(tasksCompleted, rating) {
-  const exp = Math.min(tasksCompleted / 20, 1);
-  const rat = (rating - 1) / 4;
+  const safeTasksCompleted = Number.isFinite(tasksCompleted) ? tasksCompleted : 0;
+  const safeRating = Number.isFinite(rating) ? rating : 1;
+  const exp = Math.min(safeTasksCompleted / 20, 1);
+  const rat = Math.min(Math.max((safeRating - 1) / 4, 0), 1);
   return exp * 0.5 + rat * 0.5;
 }
 
-// Score one volunteer against one task — returns 0 to 100
+// Score one volunteer against one task - returns 0 to 100
 function scoreVolunteer(volunteer, task, taskZone) {
+  const skills = Array.isArray(volunteer.skills) ? volunteer.skills : [];
+
   // Hard requirement: must have the skill
-  if (!volunteer.skills.includes(task.requiredSkill)) return 0;
+  if (!skills.includes(task.requiredSkill)) return 0;
 
   // Hard requirement: must be available
   if (volunteer.status !== 'available') return 0;
+
+  if (
+    !Number.isFinite(volunteer.lat) ||
+    !Number.isFinite(volunteer.lng) ||
+    !Number.isFinite(taskZone.lat) ||
+    !Number.isFinite(taskZone.lng)
+  ) {
+    return 0;
+  }
 
   const locScore = distanceScore(
     haversineDistance(volunteer.lat, volunteer.lng, taskZone.lat, taskZone.lng)

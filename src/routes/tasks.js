@@ -6,13 +6,23 @@ const { autoAssignVolunteers, getBestMatches } = require('../services/matchingEn
 
 const router = express.Router();
 
-// Create a new task — triggers auto assignment
-router.post('/', verifyToken, async (req, res) => {
+// Create a new task - triggers auto assignment
+router.post('/', verifyToken, requireAdmin, async (req, res) => {
   try {
     const { title, type, requiredSkill, zoneId, priority, volunteersNeeded, deadline } = req.body;
+    const parsedPriority = priority === undefined ? 2 : Number(priority);
+    const parsedVolunteersNeeded = volunteersNeeded === undefined ? 1 : Number(volunteersNeeded);
 
     if (!title || !requiredSkill || !zoneId) {
       return res.status(400).json({ error: 'title, requiredSkill, zoneId are required' });
+    }
+
+    if (!Number.isInteger(parsedPriority) || parsedPriority < 1) {
+      return res.status(400).json({ error: 'priority must be a positive integer' });
+    }
+
+    if (!Number.isInteger(parsedVolunteersNeeded) || parsedVolunteersNeeded < 1) {
+      return res.status(400).json({ error: 'volunteersNeeded must be a positive integer' });
     }
 
     const task = {
@@ -21,9 +31,9 @@ router.post('/', verifyToken, async (req, res) => {
       type: type || 'general',
       requiredSkill,
       zoneId,
-      priority: priority || 2,
+      priority: parsedPriority,
       status: 'open',
-      volunteersNeeded: volunteersNeeded || 1,
+      volunteersNeeded: parsedVolunteersNeeded,
       volunteersAssigned: 0,
       createdBy: req.user.uid,
       deadline: deadline || null,
@@ -54,7 +64,7 @@ router.get('/', verifyToken, async (req, res) => {
 
     if (status) query = query.where('status', '==', status);
     if (zoneId) query = query.where('zoneId', '==', zoneId);
-    if (priority) query = query.where('priority', '==', parseInt(priority));
+    if (priority) query = query.where('priority', '==', parseInt(priority, 10));
 
     const snapshot = await query.get();
     const tasks = snapshot.docs.map(doc => doc.data());
@@ -86,7 +96,7 @@ router.get('/:id/matches', verifyToken, async (req, res) => {
 });
 
 // Update task status through lifecycle
-router.patch('/:id/status', verifyToken, async (req, res) => {
+router.patch('/:id/status', verifyToken, requireAdmin, async (req, res) => {
   try {
     const { status } = req.body;
     const validStatuses = ['open', 'assigned', 'in_progress', 'completed', 'verified'];

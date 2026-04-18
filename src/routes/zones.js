@@ -9,17 +9,24 @@ const router = express.Router();
 router.post('/', verifyToken, async (req, res) => {
   try {
     const { name, lat, lng, affectedPeople, severity, disasterId } = req.body;
+    const parsedLat = Number(lat);
+    const parsedLng = Number(lng);
+    const parsedAffectedPeople = affectedPeople === undefined ? 0 : Number(affectedPeople);
 
-    if (!name || !lat || !lng) {
+    if (!name || !Number.isFinite(parsedLat) || !Number.isFinite(parsedLng)) {
       return res.status(400).json({ error: 'name, lat, lng are required' });
+    }
+
+    if (!Number.isFinite(parsedAffectedPeople) || parsedAffectedPeople < 0) {
+      return res.status(400).json({ error: 'affectedPeople must be 0 or more' });
     }
 
     const zone = {
       id: uuid(),
       name,
-      lat: parseFloat(lat),
-      lng: parseFloat(lng),
-      affectedPeople: affectedPeople || 0,
+      lat: parsedLat,
+      lng: parsedLng,
+      affectedPeople: parsedAffectedPeople,
       severity: severity || 'medium',
       disasterId: disasterId || null,
       createdAt: new Date().toISOString(),

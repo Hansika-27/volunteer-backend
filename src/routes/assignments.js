@@ -68,7 +68,7 @@ router.patch('/:id/complete', verifyToken, async (req, res) => {
 });
 
 // Admin verifies the task was actually completed properly
-router.patch('/:id/verify', verifyToken, async (req, res) => {
+router.patch('/:id/verify', verifyToken, requireAdmin, async (req, res) => {
   try {
     const assignmentRef = db.collection('assignments').doc(req.params.id);
     const assignmentDoc = await assignmentRef.get();
@@ -84,7 +84,7 @@ router.patch('/:id/verify', verifyToken, async (req, res) => {
       verifiedAt: new Date().toISOString(),
     });
 
-    // Update volunteer stats — they earned this
+    // Update volunteer stats - they earned this
     const volRef = db.collection('volunteers').doc(assignment.volunteerId);
     const volDoc = await volRef.get();
     const volunteer = volDoc.data();

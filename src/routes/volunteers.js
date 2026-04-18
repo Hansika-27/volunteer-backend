@@ -9,8 +9,16 @@ const router = express.Router();
 router.post('/', verifyToken, async (req, res) => {
   try {
     const { name, email, phone, skills, lat, lng, zoneId } = req.body;
+    const parsedLat = Number(lat);
+    const parsedLng = Number(lng);
 
-    if (!name || !skills || !lat || !lng) {
+    if (
+      !name ||
+      !Array.isArray(skills) ||
+      skills.length === 0 ||
+      !Number.isFinite(parsedLat) ||
+      !Number.isFinite(parsedLng)
+    ) {
       return res.status(400).json({ error: 'name, skills, lat, lng are required' });
     }
 
@@ -21,8 +29,8 @@ router.post('/', verifyToken, async (req, res) => {
       email: email || '',
       phone: phone || '',
       skills,
-      lat: parseFloat(lat),
-      lng: parseFloat(lng),
+      lat: parsedLat,
+      lng: parsedLng,
       zoneId: zoneId || null,
       status: 'available',
       rating: 5.0,
@@ -50,7 +58,7 @@ router.get('/', verifyToken, async (req, res) => {
     let volunteers = snapshot.docs.map(doc => doc.data());
 
     if (skill) {
-      volunteers = volunteers.filter(v => v.skills.includes(skill));
+      volunteers = volunteers.filter(v => Array.isArray(v.skills) && v.skills.includes(skill));
     }
 
     res.json({ count: volunteers.length, volunteers });

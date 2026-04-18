@@ -1,6 +1,14 @@
 const { db } = require('../config/firebase');
 const { v4: uuid } = require('uuid');
 
+function chunkArray(items, size) {
+  const chunks = [];
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+  return chunks;
+}
+
 // Check all resources and flag ones running low
 async function predictShortages() {
   const snapshot = await db.collection('resources').get();
@@ -39,9 +47,17 @@ async function logImpact(disasterId, zoneId) {
     .where('status', '==', 'verified')
     .get();
 
-  const assignSnap = await db.collection('assignments')
-    .where('status', '==', 'completed')
-    .get();
+  const taskIds = tasksSnap.docs.map(doc => doc.id);
+  let volunteersDeployed = 0;
+
+  for (const taskIdChunk of chunkArray(taskIds, 10)) {
+    const assignSnap = await db.collection('assignments')
+      .where('taskId', 'in', taskIdChunk)
+      .where('status', '==', 'completed')
+      .get();
+
+    volunteersDeployed += assignSnap.size;
+  }
 
   const log = {
     id: uuid(),
@@ -49,7 +65,7 @@ async function logImpact(disasterId, zoneId) {
     zoneId,
     zoneName: zone.name,
     tasksCompleted: tasksSnap.size,
-    volunteersDeployed: assignSnap.size,
+    volunteersDeployed,
     peopleHelped: zone.affectedPeople || 0,
     loggedAt: new Date().toISOString(),
   };
