@@ -7,8 +7,6 @@ Smart resource allocation system for NGO volunteer management.
 - UUID for unique IDs
 - Nodemon for development
 
-## Setup Instructions for Teammates
-
 ### Step 1 - Clone the repo
 
 ### Step 2 - Install dependencies
@@ -29,9 +27,6 @@ Copy .env.example and rename it to .env:
 
 ### Step 5 - Run the server
 npm run dev
-
-Server starts at: http://localhost:5000
-Health check: http://localhost:5000/health
 
 ---
 
@@ -105,8 +100,3 @@ Your code auto-creates these collections:
 - `resources` - food, medicine, etc.
 - `impact_logs` - impact tracking data
 
-## Important Notes
-- Never commit `serviceAccount.json` or `.env` to GitHub
-- Both are in `.gitignore` already
-- NODE_ENV=development bypasses auth token check for testing
-- Change NODE_ENV=production before final deployment
