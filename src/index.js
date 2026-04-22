@@ -13,6 +13,7 @@ app.use('/api/assignments', require('./routes/assignments'));
 app.use('/api/resources',   require('./routes/resources'));
 app.use('/api/zones',       require('./routes/zones'));
 app.use('/api/impact',      require('./routes/impact'));
+app.use('/api/ai',          require('./routes/ai'));
 
 // Health check
 app.get('/health', (req, res) => {
